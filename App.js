@@ -14,9 +14,9 @@ function Root() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: Colors.primary400 },
+          headerStyle: { backgroundColor: Colors.primary500 },
           headerTintColor: 'white',
-          contentStyle: { backgroundColor: Colors.primary300 },
+          contentStyle: { backgroundColor: Colors.primary200 },
         }}
       >
         <Stack.Screen name='Login' component={LoginScreen} />
