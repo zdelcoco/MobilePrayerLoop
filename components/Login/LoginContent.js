@@ -4,33 +4,33 @@ import LoginForm from './LoginForm';
 
 import { Colors } from '../../constants/colors';
 
-function LoginContent() {
+function LoginContent({ onAuthenticate}) {
   const [credentialsInvalid, setCredentialsInvalid] = useState({
-    email: false,
+    username: false,
     password: false,
   });
 
   function submitHandler(credentials) {
     console.log(credentials);
 
-    let { email, password } = credentials;
+    let { username, password } = credentials;
 
-    email = email.trim();
+    username = username.trim();
     password = password.trim();
 
-    const emailIsValid = email.includes('@');
-    const passwordIsValid = password.length > 6;
+    const usernameIsValid = username.length > 0;
+    const passwordIsValid = password.length > 0;
 
-    if (!emailIsValid || !passwordIsValid) {
+    if (!usernameIsValid || !passwordIsValid) {
       Alert.alert('Invalid input', 'Please check your entered credentials.');
       setCredentialsInvalid({
-        email: !emailIsValid,
+        username: !usernameIsValid,
         password: !passwordIsValid,
       });
       return;
     }
 
-    //onAuthenticate()
+    onAuthenticate({ username, password})
   }
 
   return (
