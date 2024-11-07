@@ -11,6 +11,7 @@ import UserDetailsScreen from './screens/UserDetailsScreen';
 
 import store from './store/store';
 import { logout } from './store/authSlice';
+import PrayerRequestsScreen from './screens/PrayerRequestsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,8 +41,8 @@ function AuthenticatedStack() {
       }}
     >
       <Stack.Screen
-        name='UserDetails'
-        component={UserDetailsScreen}
+        name='PrayerRequests'
+        component={PrayerRequestsScreen}
         options={{
           headerRight: ({ tintColor }) => (
             <IconButton

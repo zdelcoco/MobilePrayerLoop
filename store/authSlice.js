@@ -12,14 +12,26 @@ export const loginUser = createAsyncThunk(
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
-          return rejectWithValue({ type: 'InvalidCredentials', message: 'Invalid username or password' });
+          return rejectWithValue({
+            type: 'InvalidCredentials',
+            message: 'Invalid username or password',
+          });
         } else if (error.response.status >= 500) {
-          return rejectWithValue({ type: 'ServerError', message: 'Server error occurred. Please try again later.' });
+          return rejectWithValue({
+            type: 'ServerError',
+            message: 'Server error occurred. Please try again later.',
+          });
         }
       } else if (error.request) {
-        return rejectWithValue({ type: 'NetworkError', message: 'Network error. Please check your connection.' });
+        return rejectWithValue({
+          type: 'NetworkError',
+          message: 'Network error. Please check your connection.',
+        });
       } else {
-        return rejectWithValue({ type: 'UnknownError', message: 'An unknown error occurred.' });
+        return rejectWithValue({
+          type: 'UnknownError',
+          message: 'An unknown error occurred.',
+        });
       }
     }
   }
