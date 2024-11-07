@@ -4,15 +4,13 @@ import LoginForm from './LoginForm';
 
 import { Colors } from '../../constants/colors';
 
-function LoginContent({ onAuthenticate}) {
+function LoginContent({ onAuthenticate }) {
   const [credentialsInvalid, setCredentialsInvalid] = useState({
     username: false,
     password: false,
   });
 
   function submitHandler(credentials) {
-    console.log(credentials);
-
     let { username, password } = credentials;
 
     username = username.trim();
@@ -30,7 +28,7 @@ function LoginContent({ onAuthenticate}) {
       return;
     }
 
-    onAuthenticate({ username, password})
+    onAuthenticate({ username, password });
   }
 
   return (

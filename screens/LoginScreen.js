@@ -4,23 +4,19 @@ import { Text, View, StyleSheet, Alert } from 'react-native';
 import { Colors } from '../constants/colors';
 import LoginContent from '../components/Login/LoginContent';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
-import { login } from '../util/auth';
+import { useLogin } from '../util/auth';
 
 function LoginScreen({ navigation }) {
   const [isAuthenticating, setIsAuthenticating] = useState();
 
-  //const authCtx = useContext(AuthContext);
+  const login = useLogin();
 
   async function loginHandler({ username, password }) {
     setIsAuthenticating(true);
     try {
-      //temporarily returning entire response body
       const res = await login(username, password);
-      console.log(res);
-      //authCtx.authenticate(token);
-      //Alert.alert('Authentication Passed!', res.token, [{ text: 'Okay' }]);
       setIsAuthenticating(false);
-      navigation.navigate('UserDetails', { res });
+     // navigation.navigate('UserDetails', { res });
     } catch (error) {
       Alert.alert('Authentication Failed!', error.message, [{ text: 'Okay' }]);
       setIsAuthenticating(false);
