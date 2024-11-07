@@ -14,9 +14,7 @@ export async function login(username, password) {
     password,
   });
 
-  console.log(response.data);
+  const resBody = response.data;
 
-  const token = response.data.token;
-
-  return token;
+  return resBody;
 }

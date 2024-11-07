@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Colors } from './constants/colors';
 import LoginScreen from './screens/LoginScreen';
+import UserDetailsScreen from './screens/UserDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ function Root() {
         }}
       >
         <Stack.Screen name='Login' component={LoginScreen} />
+        <Stack.Screen name='UserDetails' component={UserDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

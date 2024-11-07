@@ -6,7 +6,7 @@ import LoginContent from '../components/Login/LoginContent';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import { login } from '../util/auth';
 
-function LoginScreen() {
+function LoginScreen({ navigation }) {
   const [isAuthenticating, setIsAuthenticating] = useState();
 
   //const authCtx = useContext(AuthContext);
@@ -14,10 +14,13 @@ function LoginScreen() {
   async function loginHandler({ username, password }) {
     setIsAuthenticating(true);
     try {
-      const token = await login(username, password);
+      //temporarily returning entire response body
+      const res = await login(username, password);
+      console.log(res);
       //authCtx.authenticate(token);
-      Alert.alert('Authentication Passed!', token, [{ text: 'Okay' }]);
+      //Alert.alert('Authentication Passed!', res.token, [{ text: 'Okay' }]);
       setIsAuthenticating(false);
+      navigation.navigate('UserDetails', { res });
     } catch (error) {
       Alert.alert('Authentication Failed!', error.message, [{ text: 'Okay' }]);
       setIsAuthenticating(false);
