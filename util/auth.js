@@ -8,13 +8,29 @@ export function useLogin() {
     try {
       const resultAction = await dispatch(loginUser({ username, password }));
       if (loginUser.fulfilled.match(resultAction)) {
-        return resultAction.payload;
-      } else {
-        throw new Error(resultAction.error.message);
+        return {
+          success: true,
+          data: resultAction.payload,
+          message: 'Login successful'
+        };
+      } else if (loginUser.rejected.match(resultAction)) {
+        const error = resultAction.payload;
+        return {
+          success: false,
+          error: {
+            type: error.type,
+            message: error.message
+          }
+        };
       }
     } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+      return {
+        success: false,
+        error: {
+          type: 'UnexpectedError',
+          message: 'An unexpected error occurred'
+        }
+      };
     }
   };
 

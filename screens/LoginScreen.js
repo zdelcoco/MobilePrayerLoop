@@ -13,13 +13,20 @@ function LoginScreen({ navigation }) {
 
   async function loginHandler({ username, password }) {
     setIsAuthenticating(true);
-    try {
-      const res = await login(username, password);
-      setIsAuthenticating(false);
-     // navigation.navigate('UserDetails', { res });
-    } catch (error) {
-      Alert.alert('Authentication Failed!', error.message, [{ text: 'Okay' }]);
-      setIsAuthenticating(false);
+    const result = await login(username, password);
+    setIsAuthenticating(false);  
+    if (result.success) {
+      // navigation.navigate('UserDetails', { res: result.data });
+    } else {
+      let alertMessage = result.error.message;
+      if (result.error.type === 'InvalidCredentials') {
+        alertMessage = 'Invalid username or password. Please try again.';
+      } else if (result.error.type === 'ServerError') {
+        alertMessage = 'Server error occurred. Please try again later.';
+      } else if (result.error.type === 'NetworkError') {
+        alertMessage = 'Network error. Please check your connection and try again.';
+      }
+      Alert.alert('Authentication Failed!', alertMessage, [{ text: 'Okay' }]);
     }
   }
 
