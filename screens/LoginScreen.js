@@ -13,7 +13,6 @@ function LoginScreen() {
   const login = useLogin();
 
   async function loginHandler({ username, password }) {
-    console.log('loginHandler called');
     const result = await login(username, password);
 
     if (result && !result.success) {

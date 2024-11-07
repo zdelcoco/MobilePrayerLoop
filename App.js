@@ -41,7 +41,7 @@ function AuthenticatedStack() {
       }}
     >
       <Stack.Screen
-        name='PrayerRequests'
+        name='Prayer Requests'
         component={PrayerRequestsScreen}
         options={{
           headerRight: ({ tintColor }) => (

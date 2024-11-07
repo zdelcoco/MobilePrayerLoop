@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { useGetPrayerRequest } from '../hooks/useGetPrayerRequest';
+import PROutput from '../components/PrayerRequests/PROutput';
 
 function PrayerRequestsScreen() {
   const getPRs = useGetPrayerRequest();
@@ -13,20 +14,16 @@ function PrayerRequestsScreen() {
       try {
         setIsLoading(true);
         const result = await getPRs();
-        if (result && result.success) {
-          console.log('Received data:', result.data);          
+        if (result && result.success) {         
           if (result.data && Array.isArray(result.data.prayerRequests)) {
             setPrayerRequests(result.data.prayerRequests);
           } else {
-            console.log('Unexpected data structure:', result.data);
             setError('Received data in unexpected format');
           }
         } else {
-          console.log(result ? result.error.message : 'Unknown error');
           setError(result ? result.error.message : 'Unknown error');
         }
       } catch (err) {
-        console.error('Error fetching prayer requests:', err);
         setError('An unexpected error occurred');
       } finally {
         setIsLoading(false);
@@ -49,16 +46,7 @@ function PrayerRequestsScreen() {
   }
 
   return (
-    <ScrollView>
-      <Text>Prayer Requests</Text>
-      {prayerRequests.map((pr, index) => (
-        <View key={index}>
-          <Text>Title: {pr.Title}</Text>
-          <Text>Description: {pr.Description}</Text>
-          {/* Add more fields as needed */}
-        </View>
-      ))}
-    </ScrollView>
+   <PROutput prayerRequests={prayerRequests} />
   );
 }
 
