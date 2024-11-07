@@ -5,14 +5,16 @@ import { selectAuthState } from '../store/authSlice';
 function UserDetailsScreen() {
   const authState = useSelector(selectAuthState);
 
+  const user = authState.user;
+
   return (
     <View>
       <Text>User Details Screen</Text>
-      <Text>User ID: {authState.userId}</Text>
-      <Text>Username: {authState.userName}</Text>
-      <Text>Email: {authState.email}</Text>
-      <Text>First Name: {authState.firstName}</Text>
-      <Text>Last Name: {authState.lastName}</Text>
+      <Text>User ID: {user.userId}</Text>
+      <Text>Username: {user.userName}</Text>
+      <Text>Email: {user.email}</Text>
+      <Text>First Name: {user.firstName}</Text>
+      <Text>Last Name: {user.lastName}</Text>
     </View>
   );
 }
