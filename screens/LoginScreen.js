@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, Alert } from 'react-native';
 import { Colors } from '../constants/colors';
 import LoginContent from '../components/Login/LoginContent';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
-import { useLogin } from '../util/auth';
+import { useLogin } from '../hooks/useLogin';
 
 function LoginScreen({ navigation }) {
   const [isAuthenticating, setIsAuthenticating] = useState();
