@@ -1,87 +1,47 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { BASE_API_URL, BASE_API_PORT } from '@env';
-import { selectAuthState } from './authSlice';
-
-export const getPrayerRequest = createAsyncThunk(
-  'prayerRequest/get',
-  async (userId, { rejectWithValue, getState }) => {
-    try {
-      const state = getState();
-      const authState = selectAuthState(state);
-      const token = authState.user?.token;
-
-      if (!token) {
-        return rejectWithValue({
-          type: 'NoToken',
-          message: 'No authentication token available',
-        });
-      }
-
-      const url = `${BASE_API_URL}:${BASE_API_PORT}/user/PrayerRequests`;
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 401) {
-          return rejectWithValue({
-            type: 'Unauthorized',
-            message: 'Unauthorized access',
-          });
-        } else if (error.response.status >= 500) {
-          return rejectWithValue({
-            type: 'ServerError',
-            message: 'Server error occurred. Please try again later.',
-          });
-        }
-      } else if (error.request) {
-        return rejectWithValue({
-          type: 'NetworkError',
-          message: 'Network error. Please check your connection.',
-        });
-      } else {
-        return rejectWithValue({
-          type: 'UnknownError',
-          message: 'An unknown error occurred.',
-        });
-      }
-    }
-  }
-);
+import { createSlice } from '@reduxjs/toolkit';
+import { getPrayerRequests } from '../util/getPrayerRequests';
 
 const prayerRequestSlice = createSlice({
   name: 'prayerRequest',
   initialState: {
-    requests: [],
+    prayerRequests: [],
     status: 'idle',
     error: null,
   },
   reducers: {
-    clearRequests: (state) => {
-      state.requests = [];
+    fetchStart: (state) => {
+      state.status = 'loading';
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(getPrayerRequest.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(getPrayerRequest.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.requests = action.payload;
-      })
-      .addCase(getPrayerRequest.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
-      });
+    fetchSuccess: (state, action) => {
+      state.status = 'succeeded';
+      state.prayerRequests = action.payload;
+      state.error = null;
+    },
+    fetchFailure: (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
+    },
+    clearRequests: (state) => {
+      state.prayerRequests = [];
+      state.status = 'idle';
+      state.error = null;
+    },
   },
 });
 
-export const { clearRequests } = prayerRequestSlice.actions;
-export const selectPrayerRequestState = (state) => state.prayerRequest;
+export const { fetchStart, fetchSuccess, fetchFailure, clearRequests } = prayerRequestSlice.actions;
+
+export const fetchPrayerRequests = () => async (dispatch, getState) => {
+  dispatch(fetchStart());
+  const token = getState().auth.user.token; 
+  const result = await getPrayerRequests(token);
+  if (result.success) {
+    dispatch(fetchSuccess(result.data));
+  } else {
+    dispatch(fetchFailure(result.error));
+  }
+};
+
+export const selectPrayerRequests = (state) => (state.prayerRequest);
+
 export default prayerRequestSlice.reducer;

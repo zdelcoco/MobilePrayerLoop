@@ -1,27 +1,26 @@
 import React from 'react';
 import { Text, View, StyleSheet, Alert } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { Colors } from '../constants/colors';
 import LoginContent from '../components/Login/LoginContent';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
-import { useLogin } from '../hooks/useLogin';
-import { selectAuthState } from '../store/authSlice';
+import { selectAuthState, login } from '../store/authSlice';
 
 function LoginScreen() {
   const { status, error } = useSelector(selectAuthState);
-  const login = useLogin();
+  const dispatch = useDispatch();
 
   async function loginHandler({ username, password }) {
-    const result = await login(username, password);
-
-    if (result && !result.success) {
-      let alertMessage = result.error.message;
-      if (result.error.type === 'InvalidCredentials') {
+    try {
+      dispatch(login(username, password));
+    } catch (error) {
+      let alertMessage = error.message;
+      if (error.type === 'InvalidCredentials') {
         alertMessage = 'Invalid username or password. Please try again.';
-      } else if (result.error.type === 'ServerError') {
+      } else if (error.type === 'ServerError') {
         alertMessage = 'Server error occurred. Please try again later.';
-      } else if (result.error.type === 'NetworkError') {
+      } else if (error.type === 'NetworkError') {
         alertMessage =
           'Network error. Please check your connection and try again.';
       }

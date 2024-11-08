@@ -1,53 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { useGetPrayerRequest } from '../hooks/useGetPrayerRequest';
+import React, { useEffect } from 'react';
+import { Text, StyleSheet } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectPrayerRequests,
+  fetchPrayerRequests,
+} from '../store/prayerRequestSlice';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
 import PROutput from '../components/PrayerRequests/PROutput';
 
 function PrayerRequestsScreen() {
-  const getPRs = useGetPrayerRequest();
-  const [prayerRequests, setPrayerRequests] = useState([]);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { prayerRequests, status, error } = useSelector(selectPrayerRequests);
 
   useEffect(() => {
-    async function fetchPrayerRequests() {
-      try {
-        setIsLoading(true);
-        const result = await getPRs();
-        if (result && result.success) {         
-          if (result.data && Array.isArray(result.data.prayerRequests)) {
-            setPrayerRequests(result.data.prayerRequests);
-          } else {
-            setError('Received data in unexpected format');
-          }
-        } else {
-          setError(result ? result.error.message : 'Unknown error');
-        }
-      } catch (err) {
-        setError('An unexpected error occurred');
-      } finally {
-        setIsLoading(false);
-      }
+    if (status === 'idle') {
+      dispatch(fetchPrayerRequests());
     }
+  }, [status, dispatch]);
 
-    fetchPrayerRequests();
-  }, []); 
-
-  if (isLoading) {
-    return <Text>Loading...</Text>;
+  if (status === 'loading') {
+    return <LoadingOverlay message='Loading prayer requests...' />;
   }
 
-  if (error) {
-    return <Text>Error: {error}</Text>;
+  if (status === 'failed') {
+    return <Text style={styles.errorText}>Error: {error?.message || 'Unknown error'}</Text>;
   }
 
-  if (!prayerRequests || prayerRequests.length === 0) {
-    return <Text>No prayer requests found</Text>;
-  }
+  const transformedPrayerRequests = Array.isArray(prayerRequests) 
+    ? prayerRequests 
+    : prayerRequests?.prayerRequests || [];
 
   return (
-   <PROutput prayerRequests={prayerRequests} />
+    <PROutput prayerRequests={transformedPrayerRequests} />
   );
 }
+
+const styles = StyleSheet.create({
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+});
 
 export default PrayerRequestsScreen;
