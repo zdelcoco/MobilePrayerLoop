@@ -1,19 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 
 import { Colors } from './constants/colors';
 import IconButton from './components/ui/IconButton';
 import LoginScreen from './screens/LoginScreen';
 import UserDetailsScreen from './screens/UserDetailsScreen';
+import PrayerRequestsScreen from './screens/PrayerRequestsScreen';
 
 import store from './store/store';
 import { logout } from './store/authSlice';
-import PrayerRequestsScreen from './screens/PrayerRequestsScreen';
 
 const Stack = createNativeStackNavigator();
+const BottomTabs = createBottomTabNavigator();
 
 function AuthStack() {
   return (
@@ -33,28 +35,45 @@ function AuthenticatedStack() {
   const dispatch = useDispatch();
 
   return (
-    <Stack.Navigator
+    <BottomTabs.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: Colors.primary500 },
         headerTintColor: 'white',
-        contentStyle: { backgroundColor: Colors.primary200 },
+        tabBarStyle: {
+          backgroundColor: Colors.primary500,
+        },
+        tabBarActiveTintColor: Colors.secondary200,
       }}
     >
-      <Stack.Screen
-        name='Prayer Requests'
+      <BottomTabs.Screen
+        name='PrayerRequests'
         component={PrayerRequestsScreen}
         options={{
-          headerRight: ({ tintColor }) => (
+          title: 'Prayer Requests',
+          tabBarIcon: ({ color }) => (
+            <IconButton icon='albums' color={color} size={24} />
+          ),
+          headerRight: () => (
             <IconButton
               icon='exit'
-              color={tintColor}
+              color='white'
               size={24}
               onPress={() => dispatch(logout())}
             />
           ),
         }}
       />
-    </Stack.Navigator>
+      <BottomTabs.Screen
+        name='UserDetails'
+        component={UserDetailsScreen}
+        options={{
+          title: 'User Details',
+          tabBarIcon: ({ color }) => (
+            <IconButton icon='person' color={color} size={24} />
+          ),
+        }}
+      />
+    </BottomTabs.Navigator>
   );
 }
 
