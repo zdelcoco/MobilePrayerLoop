@@ -3,7 +3,7 @@ import { BASE_API_URL, BASE_API_PORT } from '@env';
 
 export const loginUser = async (username, password) => {
   try {
-    const url = `${BASE_API_URL}:${BASE_API_PORT}/user/login`;
+    const url = `${BASE_API_URL}:${BASE_API_PORT}/login`;
     const response = await axios.post(url, { username, password });
 
     return { success: true, data: response.data };

@@ -4,7 +4,7 @@ import { BASE_API_URL, BASE_API_PORT } from '@env';
 
 export const getPrayerRequests = async (token) => {
   try {
-    const url = `${BASE_API_URL}:${BASE_API_PORT}/user/PrayerRequests`;      
+    const url = `${BASE_API_URL}:${BASE_API_PORT}/prayer-requests`;      
     const response = await axios.get(url, {
       headers: { Authorization: `Bearer ${token}` },
     });
